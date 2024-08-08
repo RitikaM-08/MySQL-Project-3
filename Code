@@ -1,0 +1,48 @@
+-- Retrieve posts with the highest number of comments for each user:
+SELECT *
+FROM (
+    SELECT p.*, ROW_NUMBER() OVER(PARTITION BY p.user_id ORDER BY COUNT(c.comment_id) DESC) AS rn
+    FROM Posts p
+    JOIN Comments c ON p.post_id = c.post_id
+    GROUP BY p.post_id, p.user_id
+) AS ranked_posts
+WHERE rn = 1;
+
+
+-- List users who have made comments on posts made by users they are following:
+SELECT DISTINCT u.username
+FROM Users u
+JOIN Comments c ON u.user_id = c.user_id
+JOIN Posts p ON c.post_id = p.post_id
+JOIN Followers f ON u.user_id = f.following_user_id
+WHERE p.user_id = f.follower_user_id;
+
+
+-- Find users who have not received any likes on their posts.
+SELECT u.username FROM Users u
+LEFT JOIN Posts p ON u.user_id = p.user_id
+LEFT JOIN Likes l ON p.post_id = l.post_id
+WHERE l.like_id IS NULL;
+
+
+--  Find users who have not liked any posts:
+SELECT u.username
+FROM Users u
+LEFT JOIN Likes l ON u.user_id = l.user_id
+WHERE l.like_id IS NULL;
+
+
+-- List users who have liked posts made by users they are following:
+SELECT DISTINCT u.username
+FROM Users u
+JOIN Likes l ON u.user_id = l.user_id
+JOIN Posts p ON l.post_id = p.post_id
+JOIN Followers f ON u.user_id = f.following_user_id
+WHERE l.user_id = f.follower_user_id;
+
+
+
+
+
+
+
