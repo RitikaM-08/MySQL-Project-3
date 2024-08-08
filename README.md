@@ -35,7 +35,7 @@ follow_date.
 
 2)  List users who have made comments on posts made by users they are following.
 
-3) Find posts that have more likes than the average number of likes for all posts.
+3) Find users who have not received any likes on their posts.
 
 4) Find users who have not liked any post.
 
